@@ -321,7 +321,7 @@ function LifeCanvasDrawer()
                 canvas_width / width, // relative width
                 canvas_height / height // relative height
             );
-            zoom_to(16);
+            zoom_to(relative_size * 8);
 
             x = Math.round(canvas_width / 2 - (bounds.left + width / 2) * drawer.cell_width);
             y = Math.round(canvas_height / 2 - (bounds.top + height / 2) * drawer.cell_width);
