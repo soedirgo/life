@@ -213,7 +213,7 @@ var
 
             drawer.canvas.onmousedown = function(e)
             {
-                if(e.which === 3 || e.which === 2)
+                if(e.which === 1)
                 {
                     if(drawer.cell_width >= 1) // only at reasonable zoom levels
                     {
@@ -225,7 +225,7 @@ var
                         do_field_draw(e);
                     }
                 }
-                else if(e.which === 1)
+                else if(e.which === 2 || e.which === 3)
                 {
                     last_mouse_x = e.clientX;
                     last_mouse_y = e.clientY;
@@ -317,7 +317,7 @@ var
                         clientY: e.changedTouches[0].clientY,
                     };
 
-                    do_field_move(ev);
+                    do_field_draw(ev);
 
                     e.preventDefault();
                 }
@@ -325,6 +325,7 @@ var
 
             drawer.canvas.addEventListener("touchend", function(e)
             {
+                window.removeEventListener("touchmove", do_field_draw, true);
                 window.onmouseup(e);
                 e.preventDefault();
                 scaling = false;
@@ -332,6 +333,7 @@ var
 
             drawer.canvas.addEventListener("touchcancel", function(e)
             {
+                window.removeEventListener("touchmove", do_field_draw, true);
                 window.onmouseup(e);
                 e.preventDefault();
                 scaling = false;
