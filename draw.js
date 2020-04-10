@@ -317,11 +317,11 @@ function LifeCanvasDrawer()
         if(isFinite(width) && isFinite(height))
         {
             relative_size = Math.min(
-                16, // maximum cell size
+                // 16, // maximum cell size
                 canvas_width / width, // relative width
-                canvas_height / height // relative height
+                // canvas_height / height // relative height
             );
-            zoom_to(relative_size * 8);
+            zoom_to(relative_size * 4);
 
             x = Math.round(canvas_width / 2 - (bounds.left + width / 2) * drawer.cell_width);
             y = Math.round(canvas_height / 2 - (bounds.top + height / 2) * drawer.cell_width);
