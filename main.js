@@ -26,17 +26,6 @@ var
 
 (function()
 {
-    //var console = console || { log : function() {} };
-    var initial_title = document.title;
-    var initial_description = "";
-
-    if(!document.addEventListener)
-    {
-        // IE 8 seems to switch into rage mode if the code is only loaded partly,
-        // so we are saying goodbye earlier
-        return;
-    }
-
     var
 
         /**
@@ -631,55 +620,15 @@ var
      */
     function setup_pattern(pattern_text, pattern_id, pattern_source_url, view_url, title)
     {
-        const is_mc = pattern_text.startsWith("[M2]");
-
-        if(!is_mc)
-        {
-            var result = formats.parse_pattern(pattern_text.trim());
-
-            if(result.error)
-            {
-                set_text($("import_info"), result.error);
-                return;
-            }
-        }
-        else
-        {
-            result = {
-                comment: "",
-                urls: [],
-                short_comment: "",
-            };
-        }
+        var result = formats.parse_pattern(pattern_text.trim());
 
         stop(function()
         {
-            if(title && !result.title)
-            {
-                result.title = title;
-            }
-
-            if(pattern_id && !result.title)
-            {
-                result.title = pattern_id;
-            }
-
             life.clear_pattern();
 
-            if(!is_mc)
-            {
-                var bounds = life.get_bounds(result.field_x, result.field_y);
-                life.make_center(result.field_x, result.field_y, bounds);
-                life.setup_field(result.field_x, result.field_y, bounds);
-            }
-            else
-            {
-                result = load_macrocell(life, pattern_text);
-                const step = 15;
-                life.set_step(step);
-                set_text($("label_step"), Math.pow(2, step));
-            }
-
+            var bounds = life.get_bounds(result.field_x, result.field_y);
+            life.make_center(result.field_x, result.field_y, bounds);
+            life.setup_field(result.field_x, result.field_y, bounds);
             life.save_rewind_state();
 
             if(result.rule_s && result.rule_b)
@@ -695,20 +644,6 @@ var
             drawer.redraw(life.root);
 
             update_hud();
-            set_title(result.title);
-
-            if(!pattern_source_url && pattern_id)
-            {
-                pattern_source_url = rle_link(pattern_id, true);
-            }
-
-            current_pattern = {
-                title : result.title,
-                comment : result.comment,
-                urls : result.urls,
-                view_url : view_url,
-                source_url: pattern_source_url,
-            };
         });
     }
 
@@ -940,19 +875,6 @@ var
     function $(id)
     {
         return document.getElementById(id);
-    }
-
-    /** @param {string=} title */
-    function set_title(title)
-    {
-        if(title)
-        {
-            document.title = title + " - " + initial_title;
-        }
-        else
-        {
-            document.title = initial_title;
-        }
     }
 
     function show_element(node)
