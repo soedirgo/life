@@ -46,6 +46,7 @@ var
         // is the game running ?
         /** @type {boolean} */
         running = false,
+        mouse_down = false,
 
         /** @type {number} */
         max_fps,
@@ -206,6 +207,8 @@ var
                 {
                     if(drawer.cell_width >= 1) // only at reasonable zoom levels
                     {
+                        mouse_down = true;
+
                         var coords = drawer.pixel2cell(e.clientX, e.clientY);
 
                         mouse_set = !life.get_bit(coords.x, coords.y);
@@ -335,6 +338,8 @@ var
 
                 window.removeEventListener("mousemove", do_field_draw, true);
                 window.removeEventListener("mousemove", do_field_move, true);
+
+                mouse_down = false;
             };
 
             window.onmousemove = function(e)
@@ -693,22 +698,24 @@ var
                 return;
             }
 
-            var time = Date.now();
+            if (!mouse_down) {
+                var time = Date.now();
 
-            if(per_frame * n < (time - start))
-            {
-                life.next_generation(true);
-                drawer.redraw(life.root);
-
-                n++;
-
-                // readability ... my ass
-                frame_time += (-last_frame - frame_time + (last_frame = time)) / 15;
-
-                if(frame_time < .7 * per_frame)
+                if(per_frame * n < (time - start))
                 {
-                    n = 1;
-                    start = Date.now();
+                    life.next_generation(true);
+                    drawer.redraw(life.root);
+
+                    n++;
+
+                    // readability ... my ass
+                    frame_time += (-last_frame - frame_time + (last_frame = time)) / 15;
+
+                    if(frame_time < .7 * per_frame)
+                    {
+                        n = 1;
+                        start = Date.now();
+                    }
                 }
             }
 
