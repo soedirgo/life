@@ -84,7 +84,7 @@ var
         setTimeout;
 
     // setup
-    window.onload = function()
+    function onload()
     {
         if(loaded)
         {
@@ -550,12 +550,8 @@ var
         }
     };
 
-    window.addEventListener("load", function() {
-        document.getElementById("run_button").click();
-    });
-
-    document.addEventListener("DOMContentLoaded", window.onload, false);
-
+    document.addEventListener("DOMContentLoaded", onload, false);
+    window.addEventListener("load", () => setTimeout(run, 0));
 
     /** @param {*=} absolute */
     function rle_link(id, absolute)
@@ -946,5 +942,4 @@ var
             }, timeout);
         };
     }
-
 })();
