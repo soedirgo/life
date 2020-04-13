@@ -551,7 +551,7 @@ var
     };
 
     document.addEventListener("DOMContentLoaded", onload, false);
-    window.addEventListener("load", () => setTimeout(run, 0));
+    window.addEventListener("load", () => setTimeout(run, 500));
 
     /** @param {*=} absolute */
     function rle_link(id, absolute)
