@@ -128,7 +128,6 @@ var
         function init_ui()
         {
             show_element($("toolbar"));
-            show_element($("statusbar"));
 
             var style_element = document.createElement("style");
             document.head.appendChild(style_element);
@@ -195,8 +194,6 @@ var
 
                         fit_pattern();
                         drawer.redraw(life.root);
-
-                        update_hud();
                     });
                 }
             };
@@ -298,7 +295,6 @@ var
 
                     if(changed)
                     {
-                        update_hud();
                         lazy_redraw(life.root);
                     }
                 }
@@ -342,14 +338,6 @@ var
                 mouse_down = false;
             };
 
-            window.onmousemove = function(e)
-            {
-                var coords = drawer.pixel2cell(e.clientX, e.clientY);
-
-                set_text($("label_mou"), coords.x + ", " + coords.y);
-                fix_width($("label_mou"));
-            };
-
             drawer.canvas.oncontextmenu = function(e)
             {
                 return false;
@@ -360,7 +348,6 @@ var
                 e.preventDefault();
                 drawer.zoom_at((e.wheelDelta || -e.detail) < 0, e.clientX, e.clientY);
 
-                update_hud();
                 lazy_redraw(life.root);
                 return false;
             };
@@ -454,7 +441,6 @@ var
                     if(step >= 0)
                     {
                         life.set_step(step);
-                        set_text($("label_step"), Math.pow(2, step));
                     }
 
                     return false;
@@ -475,7 +461,6 @@ var
                 var step = life.step + 1;
 
                 life.set_step(step);
-                set_text($("label_step"), Math.pow(2, step));
             };
 
             $("slower_button").onclick = function()
@@ -485,27 +470,23 @@ var
                     var step = life.step - 1;
 
                     life.set_step(step);
-                    set_text($("label_step"), Math.pow(2, step));
                 }
             };
 
             $("normalspeed_button").onclick = function()
             {
                 life.set_step(0);
-                set_text($("label_step"), 1);
             };
 
             $("zoomin_button").onclick = function()
             {
                 drawer.zoom_centered(false);
-                update_hud();
                 lazy_redraw(life.root);
             };
 
             $("zoomout_button").onclick = function()
             {
                 drawer.zoom_centered(true);
-                update_hud();
                 lazy_redraw(life.root);
             };
 
@@ -513,7 +494,6 @@ var
             {
                 fit_pattern();
                 lazy_redraw(life.root);
-                update_hud();
             };
 
             $("middle_button").onclick = function()
@@ -603,12 +583,8 @@ var
         life.rule_b = 1 << 3;
         life.rule_s = 1 << 2 | 1 << 3;
         life.set_step(0);
-        set_text($("label_step"), "1");
 
         max_fps = DEFAULT_FPS;
-
-        set_text($("label_zoom"), "1:2");
-        fix_width($("label_mou"));
 
         drawer.center_view();
     }
@@ -643,8 +619,6 @@ var
 
             fit_pattern();
             drawer.redraw(life.root);
-
-            update_hud();
         });
     }
 
@@ -675,7 +649,6 @@ var
 
         interval = setInterval(function()
         {
-            update_hud(1000 / frame_time);
         }, 666);
 
         start = Date.now();
@@ -686,7 +659,6 @@ var
             if(!running)
             {
                 clearInterval(interval);
-                update_hud(1000 / frame_time);
 
                 if(onstop) {
                     onstop();
@@ -732,38 +704,6 @@ var
 
         life.next_generation(is_single);
         drawer.redraw(life.root);
-
-        update_hud(1000 / (Date.now() - time));
-
-        if(time < 3)
-        {
-            set_text($("label_fps"), "> 9000");
-        }
-    }
-
-    /**
-     * @param {number=} fps
-     */
-    function update_hud(fps)
-    {
-        if(fps) {
-            set_text($("label_fps"), fps.toFixed(1));
-        }
-
-        set_text($("label_gen"), format_thousands(life.generation, "\u202f"));
-        fix_width($("label_gen"));
-
-        set_text($("label_pop"), format_thousands(life.root.population, "\u202f"));
-        fix_width($("label_pop"));
-
-        if(drawer.cell_width >= 1)
-        {
-            set_text($("label_zoom"), "1:" + drawer.cell_width);
-        }
-        else
-        {
-            set_text($("label_zoom"), 1 / drawer.cell_width + ":1");
-        }
     }
 
     function lazy_redraw(node)
@@ -867,7 +807,6 @@ var
         if(coords.x !== last_mouse_x || coords.y !== last_mouse_y)
         {
             life.set_bit(coords.x, coords.y, mouse_set);
-            update_hud();
 
             drawer.draw_cell(coords.x, coords.y, mouse_set);
             last_mouse_x = coords.x;
